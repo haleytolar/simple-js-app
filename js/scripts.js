@@ -1,22 +1,34 @@
-let pokemonList = [
-  {name: "Foongus" , height: 0.2 , types: ['ground', 'psychic', 'flying'] } ,
-  {name: "Jynx" , height: 1.4 , type: ['rock', 'steel', 'fire'] } ,
-  {name: "Mew" , height: 0.4, type: ['bug', 'ghost', 'dragon'] } ,
-]
-//for loop 
-for (let i = 0; i < pokemonList.length; i++) {
-//if height is greater than one end gets -Wow, That's big!
-  let html;
-  if (pokemonList[i].height > 1) {
-    html = `<h2>${pokemonList[i].name} (height: ${pokemonList[i].height}m)-Wow, That's big!</h2>`;
+
+let pokemonRepository = (function () {
+
+    let pokemonList = [
+      {name: "Foongus" , height: 0.2 , types: ['ground', 'psychic', 'flying'] } ,
+      {name: "Jynx" , height: 1.4 , type: ['rock', 'steel', 'fire'] } ,
+      {name: "Mew" , height: 0.4, type: ['bug', 'ghost', 'dragon'] } ,
+    ]
+
+    function getAll() {
+      return pokemonList;
+    }
+
+    function add(pokemon) {
+      pokemonList.push(pokemon);
+    }
+
+    return {
+      getAll: getAll,
+      add: add
+    }
+
+})()
+
+
+pokemonRepository.getAll().forEach(function(pokemonList) {
+
+  if (pokemonList.height > 1){
+    document.write(`<h2>${pokemonList.name} (height: ${pokemonList.height}m)-That is Big!</h2>`); 
   }else{
-    html = `<h2>${pokemonList[i].name} (height: ${pokemonList[i].height}m)</h2>`;
+    document.write(`<h2>${pokemonList.name} (height: ${pokemonList.height}m)</h2>`); 
   }
-//puts content in html
-  document.write(html);
-}
-
-
-
-
-
+  
+});
