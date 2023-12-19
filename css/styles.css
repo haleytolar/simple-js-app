@@ -1,12 +1,96 @@
-.pokemon-button {
-    border: none;
-    display: inline-block;
-    font-family: inherit;
-    background-color: blue;
-    color: yellow;
-    text-decoration: none;
-    padding: 10px;
-    border-radius: 3px;
-    border-bottom: 2px solid rgba(0, 0, 0, 0.3);
-    transition: opacity 0.2s; 
+body {
+  text-align: center;
+  width: auto;
+  background-color: red;
+}
+
+#title {
+  color: yellow;
+}
+
+ul {
+  list-style: none;
+  border: 4px solid blue;
+  display: inline-block;
+  font-family: inherit;
+  background-color: yellow;
+  text-decoration: none;
+  padding: 16px 32px;
+  border-radius: 4px;
+  transition: opacity 0.2s; 
+}
+
+#modal-container {
+  display: none;
+}
+
+#modal-container.is-visible {
+  position: fixed;
+  padding: 20px;
+  box-sizing: border-box;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  
+  /* to show it above other content */
+  z-index: 999; 
+  
+  /* to allow scrolling if the screen is not high enough*/
+  overflow: auto; 
+  
+  /* this is used to center the modal */
+  display: grid;
+  text-align: center;
+}
+
+.modal {
+  margin: auto;
+  display: inline-block;
+  box-sizing: border-box;
+  border-radius: 4px;
+  border: 2px solid blue;
+  background: red;
+  padding: 15px;
+  width: 100%;
+  max-width: 700px;
+  text-align: center;
+  font-size: 14 px;
+  font-weight: 700;
+  color: yellow;
+}
+
+.modal-close {
+  float: right;    
+  background-color: white;
+  border-radius: 4px;
+  border: 1px solid red;
+  text-align: center;
+  text-decoration: none;
+  font-size: 14 px;
+  font-weight: 700;
+  transition-duration: 2s;
+}
+
+.modal-close:hover,
+.modal-close.class:focus,
+.modal-close:active {
+  cursor: pointer;
+  background-color: red;
+  color:white
+}
+
+.modal h1 {
+  margin-top: 0;
+}
+
+.modal p {
+  margin-bottom: 0;
+}
+
+@media all and (max-width: 768px) {
+  .button-class {
+      padding: 16px 32px;
+  }
 }
