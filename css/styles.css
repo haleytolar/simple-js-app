@@ -1,7 +1,14 @@
+:root {
+  --background-color: red; 
+}
+
 body {
   text-align: center;
   width: auto;
-  background-color: red;
+  background-image: url(../img/bg-pokemon.jpg);
+  background-attachment: fixed;
+  background-repeat: no-repeat;
+  background-size: cover;
 }
 
 .navbar-brand {
@@ -20,28 +27,34 @@ body {
   font-weight: 800;
 }
 
-.list-group-item {
-  background-color: red;
-}
+li {
+  border: none;
+  list-style: none;
+  list-style-type: none;
+  background-image: url(../img/bg-pokemon.jpg);
+  background-attachment: fixed;
+  background-repeat: no-repeat;
+  background-size: cover;
+};
 
 #exampleModall {
-  background-color: red;
+  background-color: white;
 }
 
 .modal-dialog {
-  background-color: blue;
+  background-color: white;
 }
 
 .modal-content {
-  background-color: yellow;
+  background-color: white;
 }
 
 .modal-header {
-  background-color: blue;
+  background-color: white;
 }
 
 .modal-footer {
-  background-color: blue;
+  background-color: white;
 }
 
 
