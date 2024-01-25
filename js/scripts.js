@@ -26,7 +26,6 @@ let pokemonRepository = (function () {
 
   $('#exampleModal').on('hidden.bs.modal', function (e) {
     $( ".modal-body" ).html('');
-    console.log('hello')
   })
 
   function addListItem(pokemon) {
