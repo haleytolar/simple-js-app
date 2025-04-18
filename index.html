@@ -1,61 +1,690 @@
 <!DOCTYPE html>
-<html>
-
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css"
-      integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-    <link rel="stylesheet" type="text/css" href="dist/minified.css">
-    <title>Simple JS App</title>
-  </head>
-
-  <body>
-    <nav class="navbar justify-content-between">
-      <img src="img/pokemon.png" height="100" width="300" alt="logo">
-      <form class="form-inline">
-        <input
-          class="form-control mr-sm-2"
-          placeholder="Search"
-          aria-label="Search"
-          id="search-input"
-        />
-        <button 
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Pokémon Explorer</title>
+  
+  <link rel="icon" href="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/poke-ball.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css"
+    integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+  
+  <style>
+    :root {
+      --main-color: #ff3b30;
+      --second-color: #5076ff; 
+      --accent-color: #ffce00;
+      --dark-color: #1a1a2e;
+      --light-color: #f0f0f0;
+    }
+    
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #1a1a2e !important;
+      background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%232b2b44' fill-opacity='0.4' fill-rule='evenodd'/%3E%3C/svg%3E");
+      color: #f0f0f0 !important;
+      padding-bottom: 50px;
+    }
+    
+    h1, h2, h3, h4, h5, .card-title, .modal-title, .navbar-brand, .loading-text {
+      font-family: 'Press Start 2P', cursive !important;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    
+    .pokemon-logo {
+      filter: drop-shadow(0 0 8px rgba(255, 206, 0, 0.6));
+      max-width: 250px;
+      transition: all 0.3s ease;
+    }
+    
+    .pokemon-logo:hover {
+      filter: drop-shadow(0 0 12px rgba(255, 206, 0, 0.8));
+      transform: scale(1.05);
+    }
+    
+    .navbar {
+      background-color: rgba(26, 26, 46, 0.9) !important;
+      padding: 15px 20px;
+      margin-bottom: 20px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+      border-bottom: 3px solid #ffce00;
+    }
+    
+    .title-container {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .main-title {
+      color: #ffce00;
+      text-shadow: 3px 3px 0px rgba(0, 0, 0, 0.5);
+      margin: 0 0 25px 0;
+      font-size: 1.5rem;
+      font-family: 'Press Start 2P', cursive !important;
+    }
+    
+    .search-box {
+      background-color: rgba(26, 26, 46, 0.5);
+      border: 2px solid #ff3b30;
+      color: white;
+      border-radius: 5px;
+      padding: 12px 15px;
+      margin-right: 10px;
+      font-size: 16px;
+      transition: all 0.3s ease;
+    }
+    
+    .search-box:focus {
+      border-color: #ffce00;
+      box-shadow: 0 0 10px rgba(255, 206, 0, 0.5);
+      outline: none;
+    }
+    
+    .search-btn {
+      background: linear-gradient(135deg, #ff3b30 0%, #d32f2f 100%);
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 5px;
+      text-transform: uppercase;
+      font-weight: bold;
+      letter-spacing: 1px;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      transition: all 0.3s ease;
+      border: 2px solid #ff6659;
+      font-family: 'Press Start 2P', cursive !important;
+      font-size: 10px;
+      box-shadow: 0 4px 0px #a82315;
+    }
+    
+    .search-btn:hover {
+      background: linear-gradient(135deg, #ff6659 0%, #ff5252 100%);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 0px #a82315;
+    }
+    
+    .search-btn:active {
+      transform: translateY(2px);
+      box-shadow: 0 2px 0px #a82315;
+    }
+    
+    .card {
+      background: linear-gradient(145deg, #2a2a4a 0%, #1f1f3d 100%);
+      border-radius: 15px;
+      transition: all 0.3s ease;
+      overflow: hidden;
+      height: 100%;
+      margin-bottom: 20px;
+      border: 3px solid #5076ff;
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+    }
+    
+    .card:hover {
+      transform: translateY(-10px) scale(1.03);
+      box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4);
+      border-color: #ffce00;
+    }
+    
+    .pokemon-image-container {
+      background: radial-gradient(circle, rgba(80, 118, 255, 0.3) 0%, rgba(26, 26, 46, 0.8) 100%);
+      border-radius: 50%;
+      width: 120px;
+      height: 120px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 20px auto 10px;
+      padding: 20px;
+      border: 2px solid #5076ff;
+      box-shadow: 0 0 20px rgba(80, 118, 255, 0.4);
+    }
+    
+    .pokemon-image {
+      width: 80px;
+      height: auto;
+      filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.5));
+      animation: float 3s ease-in-out infinite;
+    }
+    
+    @keyframes float {
+      0% { transform: translateY(0px); }
+      50% { transform: translateY(-10px); }
+      100% { transform: translateY(0px); }
+    }
+    
+    .card-title {
+      text-transform: capitalize;
+      margin: 15px 0;
+      color: #ffce00;
+      font-size: 0.8rem;
+      text-shadow: 2px 2px 0px rgba(0, 0, 0, 0.5);
+      font-family: 'Press Start 2P', cursive !important;
+    }
+    
+    .card-body {
+      padding: 1.5rem;
+    }
+    
+    .detail-btn {
+      background: linear-gradient(135deg, #5076ff 0%, #3f5ce0 100%);
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 5px;
+      font-weight: bold;
+      letter-spacing: 1px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      border: 2px solid #7a96ff;
+      font-family: 'Press Start 2P', cursive !important;
+      font-size: 8px;
+      box-shadow: 0 4px 0px #2950d5;
+      position: relative;
+      overflow: hidden;
+      text-transform: uppercase;
+    }
+    
+    .detail-btn:hover {
+      background: linear-gradient(135deg, #7a96ff 0%, #5e77ff 100%);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 0px #2950d5;
+    }
+    
+    .detail-btn:active {
+      transform: translateY(2px);
+      box-shadow: 0 2px 0px #2950d5;
+    }
+    
+    .modal-content {
+      background: linear-gradient(145deg, #2a2a4a 0%, #1f1f3d 100%);
+      border-radius: 20px;
+      border: 3px solid #ffce00;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+      color: #f0f0f0;
+    }
+    
+    .modal-header {
+      background-color: rgba(26, 26, 46, 0.8);
+      border-bottom: 2px solid #ffce00;
+      padding: 20px;
+    }
+    
+    .modal-title {
+      text-transform: capitalize;
+      font-weight: bold;
+      color: #ffce00;
+      font-size: 1rem;
+      text-shadow: 2px 2px 0px rgba(0, 0, 0, 0.5);
+    }
+    
+    .modal-body {
+      text-align: center;
+      padding: 30px;
+    }
+    
+    .modal-body img {
+      width: 150px;
+      height: auto;
+      filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.3));
+      margin-bottom: 20px;
+    }
+    
+    .modal-body p {
+      font-size: 16px;
+      margin-top: 15px;
+      background-color: rgba(26, 26, 46, 0.5);
+      padding: 10px;
+      border-radius: 10px;
+      border: 1px solid #5076ff;
+    }
+    
+    .pokemon-stats {
+      display: flex;
+      justify-content: space-around;
+      margin-top: 20px;
+      flex-wrap: wrap;
+    }
+    
+    .stat-box {
+      background-color: rgba(80, 118, 255, 0.2);
+      border: 1px solid #5076ff;
+      border-radius: 10px;
+      padding: 10px;
+      margin: 5px;
+      min-width: 100px;
+    }
+    
+    .close {
+      color: #ffce00;
+      opacity: 1;
+      text-shadow: none;
+    }
+    
+    .close:hover {
+      color: white;
+    }
+    
+    .loading-message {
+      margin: 40px auto;
+      padding: 30px;
+      background-color: rgba(26, 26, 46, 0.8);
+      border-radius: 15px;
+      max-width: 350px;
+      border: 2px solid #ff3b30;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+      display: block;
+    }
+    
+    .loading-spinner {
+      width: 60px;
+      height: 60px;
+      border: 5px solid rgba(80, 118, 255, 0.3);
+      border-radius: 50%;
+      border-top-color: #ffce00;
+      animation: spin 1s ease-in-out infinite;
+      margin: 0 auto 20px;
+    }
+    
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+    
+    .loading-text {
+      font-family: 'Press Start 2P', cursive !important;
+      color: #ffce00;
+      font-size: 12px;
+      margin-top: 20px;
+      text-shadow: 2px 2px 0px rgba(0, 0, 0, 0.5);
+    }
+    
+    .container {
+      animation: fadeIn 1s ease-in-out;
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    @media (max-width: 767px) {
+      .main-title {
+        font-size: 1.2rem;
+      }
+      
+      .navbar form {
+        margin-top: 15px;
+        width: 100%;
+        display: flex;
+      }
+      
+      .search-box {
+        flex-grow: 1;
+      }
+      
+      .navbar {
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+<body>
+  <nav class="navbar justify-content-between">
+    <div class="title-container">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/9/98/International_Pok%C3%A9mon_logo.svg" class="pokemon-logo" alt="Pokemon Logo">
+    </div>
+    <form class="form-inline">
+      <input
+        class="search-box"
+        placeholder="Find a Pokémon..."
+        aria-label="Search"
+        id="search-input"
+      />
+      <button
         id="search-btn"
-        class="btn btn-outline-success my-2 my-sm-0" 
+        class="search-btn"
         type="submit">
-          Search
-        </button>
-      </form>
-    </nav>
-    <ul class="pokemon-list list-group">
-    </ul>
-    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-      aria-hidden="true">
-      <div class="modal-dialog" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLabel"></h5>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-              <span aria-hidden="true">&times;</span>
-            </button>
-          </div>
-          <div class="modal-body">
-          </div>
+        Search
+      </button>
+    </form>
+  </nav>
+  
+  <div class="container mt-4">
+    <div class="text-center mb-4">
+      <h1 class="main-title">Pokémon Explorer</h1>
+    </div>
+    
+    <div class="loading-message text-center">
+      <div class="loading-spinner"></div>
+      <p class="loading-text">Loading Pokémon...</p>
+    </div>
+    
+    <div class="row pokemon-grid">
+    </div>
+  </div>
+  
+  <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel"></h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
         </div>
       </div>
     </div>
-    <script src="https://code.jquery.com/jquery-3.3.1.min.js"
-      integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.7/dist/umd/popper.min.js"
-      integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
-      crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/js/bootstrap.min.js"
-      integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
-      crossorigin="anonymous"></script>
-    <script src="js/fetch-polyfill.js"></script>
-    <script src="js/promise-polyfill.js"></script>
-    <script src="dist/minified.js"></script> 
-  </body>
+  </div>
+  
+  <script src="https://code.jquery.com/jquery-3.3.1.min.js"
+    integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.7/dist/umd/popper.min.js"
+    integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+    crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/js/bootstrap.min.js"
+    integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+    crossorigin="anonymous"></script>
+  
+  <script>
+    let pokemonRepository = (function () {
+      let pokemonList = [];
+      let apiUrl = 'https://pokeapi.co/api/v2/pokemon/?limit=150';
+      
+      function getAll() {
+        return pokemonList;
+      }
+      
+      function showModal(pokemon) {
+        const modalBody = $(".modal-body");
+        const modalTitle = $(".modal-title");
+        modalTitle.empty();
+        modalBody.empty();
+        
+        const myImage = document.createElement("img");
+        myImage.src = pokemon.imageUrl;
+        myImage.classList.add("img-fluid");
+        myImage.alt = pokemon.name;
+        
+        const heightElement = document.createElement("p");
+        heightElement.innerText = "Height: " + pokemon.height/10 + "m";
+        
+        const statsContainer = document.createElement("div");
+        statsContainer.classList.add("pokemon-stats");
+        
+        modalTitle.text(pokemon.name);
+        modalBody.append(myImage);
+        modalBody.append(heightElement);
+        
+        if (pokemon.types && pokemon.types.length > 0) {
+          const typesElement = document.createElement("p");
+          const typeNames = pokemon.types.map(t => t.type.name.toUpperCase()).join(' / ');
+          typesElement.innerText = "Type: " + typeNames;
+          modalBody.append(typesElement);
+        }
+        
+        const statsHeading = document.createElement("h5");
+        statsHeading.innerText = "Stats";
+        statsHeading.classList.add("mt-4", "mb-3");
+        modalBody.append(statsHeading);
+        
+        modalBody.append(statsContainer);
+        
+        if (pokemon.stats) {
+          pokemon.stats.forEach(stat => {
+            const statBox = document.createElement("div");
+            statBox.classList.add("stat-box");
+            
+            const statName = document.createElement("div");
+            statName.innerText = formatStatName(stat.stat.name);
+            statName.classList.add("stat-name");
+            
+            const statValue = document.createElement("div");
+            statValue.innerText = stat.base_stat;
+            statValue.classList.add("stat-value");
+            
+            statBox.appendChild(statName);
+            statBox.appendChild(statValue);
+            statsContainer.appendChild(statBox);
+          });
+        }
+      }
+      
+      function formatStatName(statName) {
+        return statName
+          .split('-')
+          .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+          .join(' ');
+      }
+      
+      function addListItem(pokemon) {
+        let pokemonGrid = document.querySelector(".pokemon-grid");
+        
+        const cardColumn = document.createElement("div");
+        cardColumn.classList.add("col-md-4", "mb-4");
+        
+        const card = document.createElement("div");
+        card.classList.add("card", "h-100");
+        
+        const imageContainer = document.createElement("div");
+        imageContainer.classList.add("pokemon-image-container");
+        
+        const pokemonImage = document.createElement("img");
+        pokemonImage.classList.add("pokemon-image");
+        pokemonImage.src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='40' fill='%233567b0' opacity='0.5'/%3E%3Ctext x='50%25' y='50%25' font-size='12' text-anchor='middle' alignment-baseline='middle' font-family='Arial' fill='%23ffffff'%3ELoading...%3C/text%3E%3C/svg%3E";
+        pokemonImage.alt = pokemon.name;
+        
+        const cardBody = document.createElement("div");
+        cardBody.classList.add("card-body");
+        
+        const pokemonName = document.createElement("h5");
+        pokemonName.classList.add("card-title");
+        pokemonName.innerText = pokemon.name;
+        
+        const button = document.createElement("button");
+        button.innerText = "View Stats";
+        button.setAttribute("data-toggle", "modal");
+        button.setAttribute("data-target", "#exampleModal");
+        button.classList.add("detail-btn");
+        
+        imageContainer.appendChild(pokemonImage);
+        cardBody.appendChild(pokemonName);
+        cardBody.appendChild(button);
+        card.appendChild(imageContainer);
+        card.appendChild(cardBody);
+        cardColumn.appendChild(card);
+        pokemonGrid.appendChild(cardColumn);
+        
+        loadDetails(pokemon).then(function () {
+          pokemonImage.src = pokemon.imageUrl;
+          
+          button.addEventListener("click", () => {
+            showDetails(pokemon);
+          });
+        });
+      }
+      
+      function loadList() {
+        showLoadingMessage();
+        return fetch(apiUrl)
+          .then(function (response) {
+            return response.json();
+          })
+          .then(function (json) {
+            hideLoadingMessage();
+            json.results.forEach(function (item) {
+              let pokemon = {
+                name: item.name,
+                detailsUrl: item.url
+              };
+              add(pokemon);
+            });
+          })
+          .catch(function (e) {
+            hideLoadingMessage();
+            console.error("Error loading Pokemon list:", e);
+            const container = document.querySelector('.container');
+            const errorMessage = document.createElement('div');
+            errorMessage.classList.add('text-center', 'p-4', 'mt-5');
+            errorMessage.style.background = 'rgba(26, 26, 46, 0.8)';
+            errorMessage.style.border = '2px solid #ff3b30';
+            errorMessage.style.borderRadius = '15px';
+            errorMessage.innerHTML = `
+              <h3 style="font-family: 'Press Start 2P', cursive !important; color: #ffce00;">Connection Error!</h3>
+              <p>Could not connect to the Pokemon API. Please check your internet connection and refresh the page.</p>
+            `;
+            container.appendChild(errorMessage);
+          });
+      }
+      
+      function showLoadingMessage() {
+        const loadingMessage = document.querySelector(".loading-message");
+        if (loadingMessage) {
+          loadingMessage.style.display = "block";
+        }
+      }
+      
+      function hideLoadingMessage() {
+        const loadingMessage = document.querySelector(".loading-message");
+        if (loadingMessage) {
+          loadingMessage.style.display = "none";
+        }
+      }
+      
+      function loadDetails(item) {
+        const url = item.detailsUrl;
+        return fetch(url)
+          .then(function (response) {
+            return response.json();
+          })
+          .then(function (details) {
+            item.imageUrl = details.sprites.front_default;
+            
+            try {
+              if (details.sprites.other && 
+                  details.sprites.other['official-artwork'] && 
+                  details.sprites.other['official-artwork'].front_default) {
+                item.imageUrl = details.sprites.other['official-artwork'].front_default;
+              }
+            } catch (error) {
+              console.log('Using default sprite - official artwork not available');
+            }
+            
+            item.height = details.height;
+            item.types = details.types;
+            item.stats = details.stats;
+            return item;
+          })
+          .catch(function (e) {
+            console.error("Error loading Pokemon details:", e);
+            return item;
+          });
+      }
+      
+      function add(pokemon) {
+        if (typeof pokemon === "object" && "name" in pokemon) {
+          pokemonList.push(pokemon);
+        } else {
+          console.error("Invalid Pokemon format");
+        }
+      }
+      
+      function showDetails(pokemon) {
+        showModal(pokemon);
+      }
+      
+      function init() {
+        loadList().then(function () {
+          getAll().forEach(function (pokemon) {
+            addListItem(pokemon);
+          });
+        });
+      }
+      
+      return {
+        getAll: getAll,
+        add: add,
+        addListItem: addListItem,
+        loadList: loadList,
+        loadDetails: loadDetails,
+        init: init
+      };
+    })();
 
+    const handleSearch = (e) => {
+      e.preventDefault();
+      const searchInput = document.getElementById("search-input").value.toLowerCase().trim();
+      
+      if (searchInput === '') {
+        const pokemonGridContainer = document.querySelector(".pokemon-grid");
+        pokemonGridContainer.innerHTML = "";
+        pokemonRepository.getAll().forEach((pokemon) => {
+          pokemonRepository.addListItem(pokemon);
+        });
+        return;
+      }
+      
+      const pokemonGridContainer = document.querySelector(".pokemon-grid");
+      pokemonGridContainer.innerHTML = "";
+      
+      const pokemons = [...pokemonRepository.getAll()];
+      
+      let hasResults = false;
+      
+      pokemons.forEach((pokemon) => {
+        if (pokemon.name.toLowerCase().includes(searchInput)) {
+          pokemonRepository.addListItem(pokemon);
+          hasResults = true;
+        }
+      });
+      
+      if (!hasResults) {
+        const noResultsMessage = document.createElement("div");
+        noResultsMessage.classList.add("col-12", "text-center", "mt-4", "mb-5");
+        noResultsMessage.innerHTML = `
+          <div class="p-4" style="background: rgba(26, 26, 46, 0.8); border-radius: 15px; border: 2px solid #ff3b30;">
+            <h3 style="font-family: 'Press Start 2P', cursive !important; color: #ffce00;">No Pokémon Found!</h3>
+            <p>Try searching for another Pokémon name.</p>
+          </div>
+        `;
+        pokemonGridContainer.appendChild(noResultsMessage);
+      }
+    };
+
+    const searchBtn = document.getElementById("search-btn");
+    searchBtn.addEventListener("click", handleSearch);
+
+    document.getElementById("search-input").addEventListener("keyup", function(event) {
+      if (event.key === "Enter") {
+        event.preventDefault();
+        handleSearch(event);
+      }
+    });
+
+    function playButtonSound() {
+      const audio = new Audio('https://play.pokemonshowdown.com/audio/sfx/click.wav');
+      audio.volume = 0.5;
+      audio.play().catch(error => console.log('Audio play failed:', error));
+    }
+
+    document.addEventListener('click', function(e) {
+      if (e.target.classList.contains('detail-btn') || e.target.classList.contains('search-btn')) {
+        playButtonSound();
+      }
+    });
+
+    document.addEventListener('DOMContentLoaded', function() {
+      document.body.style.backgroundColor = '#1a1a2e';
+      pokemonRepository.init();
+    });
+  </script>
+</body>
 </html>
